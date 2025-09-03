@@ -2,71 +2,61 @@ import tkinter as tk
 from tkinter import messagebox
 from database.db import connect_db
 
-def signup_user():
-    name = entry_name.get()
-    age = entry_age.get()
-    email = entry_email.get()
-    phone = entry_phone.get()
-    password = entry_password.get()
+def main(root):  # now accepts root
+    signup_window = tk.Toplevel(root)
+    signup_window.title("User Signup")
+    signup_window.geometry("300x350")
 
-    if not name or not age or not email or not password:
-        messagebox.showerror("Error", "Please fill all required fields")
-        return
+    def signup_user():
+        name = entry_name.get()
+        age = entry_age.get()
+        email = entry_email.get()
+        phone = entry_phone.get()
+        password = entry_password.get()
 
-    try:
-        age = int(age)
-    except ValueError:
-        messagebox.showerror("Error", "Age must be a number")
-        return
+        if not name or not age or not email or not password:
+            messagebox.showerror("Error", "Please fill all required fields")
+            return
 
-    conn = connect_db()
-    cursor = conn.cursor()
-    try:
-        cursor.execute("""
-            INSERT INTO users (name, age, email, phone, password)
-            VALUES (?, ?, ?, ?, ?)
-        """, (name, age, email, phone, password))
-        conn.commit()
-        messagebox.showinfo("Success", "User registered successfully!")
-        root.destroy()  # Close signup window
-    except Exception as e:
-        messagebox.showerror("Error", str(e))
-    finally:
-        conn.close()
+        try:
+            age = int(age)
+        except ValueError:
+            messagebox.showerror("Error", "Age must be a number")
+            return
 
+        conn = connect_db()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                INSERT INTO users (name, age, email, phone, password)
+                VALUES (?, ?, ?, ?, ?)
+            """, (name, age, email, phone, password))
+            conn.commit()
+            messagebox.showinfo("Success", "User registered successfully!")
+            signup_window.destroy()
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+        finally:
+            conn.close()
 
-# ---------------- GUI Wrapper ----------------
-def main():
-    global root, entry_name, entry_age, entry_email, entry_phone, entry_password
-    root = tk.Tk()
-    root.title("User Signup")
-    root.geometry("300x350")
-
-    tk.Label(root, text="Name").pack(pady=5)
-    entry_name = tk.Entry(root)
+    tk.Label(signup_window, text="Name").pack(pady=5)
+    entry_name = tk.Entry(signup_window)
     entry_name.pack(pady=5)
 
-    tk.Label(root, text="Age").pack(pady=5)
-    entry_age = tk.Entry(root)
+    tk.Label(signup_window, text="Age").pack(pady=5)
+    entry_age = tk.Entry(signup_window)
     entry_age.pack(pady=5)
 
-    tk.Label(root, text="Email").pack(pady=5)
-    entry_email = tk.Entry(root)
+    tk.Label(signup_window, text="Email").pack(pady=5)
+    entry_email = tk.Entry(signup_window)
     entry_email.pack(pady=5)
 
-    tk.Label(root, text="Phone").pack(pady=5)
-    entry_phone = tk.Entry(root)
+    tk.Label(signup_window, text="Phone").pack(pady=5)
+    entry_phone = tk.Entry(signup_window)
     entry_phone.pack(pady=5)
 
-    tk.Label(root, text="Password").pack(pady=5)
-    entry_password = tk.Entry(root, show="*")
+    tk.Label(signup_window, text="Password").pack(pady=5)
+    entry_password = tk.Entry(signup_window, show="*")
     entry_password.pack(pady=5)
 
-    tk.Button(root, text="Signup", width=20, command=signup_user).pack(pady=10)
-
-    root.mainloop()
-
-
-# ---------------- Allow direct run ----------------
-if __name__ == "__main__":
-    main()
+    tk.Button(signup_window, text="Signup", width=20, command=signup_user).pack(pady=10)
