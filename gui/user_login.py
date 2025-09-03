@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from database.db import connect_db
+from gui.user_dashboard import launch_dashboard  # Import user dashboard
 
 def login_user():
     email = entry_email.get()
@@ -18,11 +19,12 @@ def login_user():
 
     if user:
         messagebox.showinfo("Login Success", f"Welcome {user[1]}!")
-        root.destroy()
-        # user_dashboard.launch_dashboard()  # To be implemented in Day 5
+        root.destroy()  # Close login window
+        launch_dashboard(user[0])  # Launch dashboard with user_id
     else:
         messagebox.showerror("Login Failed", "Invalid email or password")
 
+# ---------------- GUI ----------------
 root = tk.Tk()
 root.title("User Login")
 root.geometry("300x200")
