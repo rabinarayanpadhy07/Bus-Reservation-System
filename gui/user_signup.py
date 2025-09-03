@@ -28,36 +28,45 @@ def signup_user():
         """, (name, age, email, phone, password))
         conn.commit()
         messagebox.showinfo("Success", "User registered successfully!")
-        root.destroy()
+        root.destroy()  # Close signup window
     except Exception as e:
         messagebox.showerror("Error", str(e))
     finally:
         conn.close()
 
-root = tk.Tk()
-root.title("User Signup")
-root.geometry("300x350")
 
-tk.Label(root, text="Name").pack(pady=5)
-entry_name = tk.Entry(root)
-entry_name.pack(pady=5)
+# ---------------- GUI Wrapper ----------------
+def main():
+    global root, entry_name, entry_age, entry_email, entry_phone, entry_password
+    root = tk.Tk()
+    root.title("User Signup")
+    root.geometry("300x350")
 
-tk.Label(root, text="Age").pack(pady=5)
-entry_age = tk.Entry(root)
-entry_age.pack(pady=5)
+    tk.Label(root, text="Name").pack(pady=5)
+    entry_name = tk.Entry(root)
+    entry_name.pack(pady=5)
 
-tk.Label(root, text="Email").pack(pady=5)
-entry_email = tk.Entry(root)
-entry_email.pack(pady=5)
+    tk.Label(root, text="Age").pack(pady=5)
+    entry_age = tk.Entry(root)
+    entry_age.pack(pady=5)
 
-tk.Label(root, text="Phone").pack(pady=5)
-entry_phone = tk.Entry(root)
-entry_phone.pack(pady=5)
+    tk.Label(root, text="Email").pack(pady=5)
+    entry_email = tk.Entry(root)
+    entry_email.pack(pady=5)
 
-tk.Label(root, text="Password").pack(pady=5)
-entry_password = tk.Entry(root, show="*")
-entry_password.pack(pady=5)
+    tk.Label(root, text="Phone").pack(pady=5)
+    entry_phone = tk.Entry(root)
+    entry_phone.pack(pady=5)
 
-tk.Button(root, text="Signup", command=signup_user).pack(pady=10)
+    tk.Label(root, text="Password").pack(pady=5)
+    entry_password = tk.Entry(root, show="*")
+    entry_password.pack(pady=5)
 
-root.mainloop()
+    tk.Button(root, text="Signup", width=20, command=signup_user).pack(pady=10)
+
+    root.mainloop()
+
+
+# ---------------- Allow direct run ----------------
+if __name__ == "__main__":
+    main()
