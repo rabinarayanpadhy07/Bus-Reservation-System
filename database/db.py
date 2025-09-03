@@ -1,14 +1,12 @@
 import sqlite3
 
 def connect_db():
-    conn = sqlite3.connect("bus_reservation.db")
-    return conn
+    return sqlite3.connect("bus_reservation.db")
 
 def create_tables():
     conn = connect_db()
     cursor = conn.cursor()
 
-    # Users table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,7 +18,6 @@ def create_tables():
     )
     """)
 
-    # Buses table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS buses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +31,6 @@ def create_tables():
     )
     """)
 
-    # Bookings table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS bookings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

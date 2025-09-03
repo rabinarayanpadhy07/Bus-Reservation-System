@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
+from gui import admin_dashboard  # Correct package import
 
-# Hardcoded admin credentials
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "admin123"
 
@@ -11,8 +11,8 @@ def login_admin():
 
     if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
         messagebox.showinfo("Login Success", "Welcome Admin!")
-        root.destroy()  # close login window
-        import admin_dashboard  # open dashboard
+        root.destroy()
+        admin_dashboard.launch_dashboard()
     else:
         messagebox.showerror("Login Failed", "Invalid credentials")
 
