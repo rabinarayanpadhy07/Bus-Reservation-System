@@ -239,13 +239,39 @@ elif menu == "🚌 Manage Buses":
                         show_error("Please fill in all required fields marked with *")
                     else:
                         try:
+                            # Find the lowest available ID (reuse deleted bus IDs)
+                            cursor.execute("SELECT id FROM Buses ORDER BY id")
+                            existing_ids = [row[0] for row in cursor.fetchall()]
+                            
+                            # Find the first gap in the sequence, or use 1 if no buses exist
+                            new_id = 1
+                            if existing_ids:
+                                # Look for gaps in the sequence
+                                for i in range(1, max(existing_ids) + 2):
+                                    if i not in existing_ids:
+                                        new_id = i
+                                        break
+                            else:
+                                new_id = 1
+                            
+                            # Insert with the specific ID
                             cursor.execute(
-                                """INSERT INTO Buses (name, source, destination, date, time, total_seats, available_seats)
-                                   VALUES (?, ?, ?, ?, ?, ?, ?)""",
-                                (name, source, destination, str(date), str(time), total_seats, total_seats),
+                                """INSERT INTO Buses (id, name, source, destination, date, time, total_seats, available_seats)
+                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                                (new_id, name, source, destination, str(date), str(time), total_seats, total_seats),
                             )
+                            
+                            # Update SQLite sequence to prevent conflicts
+                            max_id = max(new_id, max(existing_ids) if existing_ids else new_id)
+                            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence'")
+                            if cursor.fetchone():
+                                cursor.execute("UPDATE sqlite_sequence SET seq = ? WHERE name = 'Buses'", (max_id,))
+                                # If no row exists, create one
+                                if cursor.rowcount == 0:
+                                    cursor.execute("INSERT INTO sqlite_sequence (name, seq) VALUES ('Buses', ?)", (max_id,))
+                            
                             conn.commit()
-                            show_success(f"Bus '{name}' added successfully!")
+                            show_success(f"Bus '{name}' added successfully with ID {new_id}!")
                             st.rerun()
                         except Exception as e:
                             show_error(f"Error adding bus: {str(e)}")
