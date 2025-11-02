@@ -29,21 +29,29 @@ if submit:
     elif not is_strong_password(password):
         st.error("Password must be at least 6 characters!")
     else:
-        # Hash password
-        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
-        
-        # Insert into SQLite DB
+        # Check if email already exists
         conn = get_connection()
         cursor = conn.cursor()
         
         try:
-            cursor.execute(
-                "INSERT INTO Users (name, email, password) VALUES (?, ?, ?)",
-                (name, email, hashed_password)
-            )
-            conn.commit()
-            st.success("Account created successfully! You can now login.")
+            # Check if email already exists
+            cursor.execute("SELECT id FROM Users WHERE email = ?", (email,))
+            existing_user = cursor.fetchone()
+            
+            if existing_user:
+                st.error("This email is already registered! Please use a different email or try logging in.")
+            else:
+                # Hash password
+                hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+                
+                # Insert into SQLite DB
+                cursor.execute(
+                    "INSERT INTO Users (name, email, password) VALUES (?, ?, ?)",
+                    (name, email, hashed_password)
+                )
+                conn.commit()
+                st.success("Account created successfully! You can now login.")
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"An error occurred: {str(e)}. Please try again.")
         finally:
             conn.close()
