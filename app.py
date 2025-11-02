@@ -13,7 +13,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Fetch all available buses
+# Fetch latest/newly added bus only
 try:
     conn = get_connection()
     cursor = conn.cursor()
@@ -21,54 +21,47 @@ try:
         SELECT id, name, source, destination, date, time, total_seats, available_seats 
         FROM Buses 
         WHERE available_seats > 0
-        ORDER BY date, time
+        ORDER BY id DESC
+        LIMIT 1
     """)
-    buses = cursor.fetchall()
+    bus = cursor.fetchone()
     conn.close()
     
-    if buses:
-        st.header("🚌 Available Buses")
-        st.info(f"Found **{len(buses)}** bus(es) with available seats")
+    if bus:
+        bus_id, name, source, destination, date, time, total_seats, available_seats = bus
+        st.info(" recently added bus")
         
-        # Display buses in a grid layout
-        for i, bus in enumerate(buses):
-            bus_id, name, source, destination, date, time, total_seats, available_seats = bus
+        # Create a card-like container for the bus
+        with st.container():
+            col1, col2 = st.columns([4, 1])
             
-            # Create a card-like container for each bus
-            with st.container():
-                col1, col2 = st.columns([4, 1])
+            with col1:
+                st.markdown(f"### 🚌 {name}")
+                detail_col1, detail_col2, detail_col3, detail_col4 = st.columns(4)
                 
-                with col1:
-                    st.markdown(f"### 🚌 {name}")
-                    detail_col1, detail_col2, detail_col3, detail_col4 = st.columns(4)
-                    
-                    with detail_col1:
-                        st.markdown(f"**📍 Route:**\n{source} ➡️ {destination}")
-                    
-                    with detail_col2:
-                        st.markdown(f"**📅 Date:**\n{date}")
-                    
-                    with detail_col3:
-                        st.markdown(f"**🕐 Time:**\n{time}")
-                    
-                    with detail_col4:
-                        if available_seats > 0:
-                            st.markdown(f"**💺 Seats:**\n{available_seats}/{total_seats} available")
-                        else:
-                            st.markdown(f"**❌ Fully Booked**")
+                with detail_col1:
+                    st.markdown(f"**📍 Route:**\n{source} ➡️ {destination}")
                 
-                with col2:
-                    st.write("")  # Add some spacing
-                    st.write("")  # Add some spacing
-                    if st.button("🎫 Book Now", key=f"book_{bus_id}", type="primary", use_container_width=True):
-                        # Store the selected bus ID in session state
-                        st.session_state.selected_bus_id = bus_id
-                        # Redirect to signup page
-                        st.switch_page("pages/signup.py")
+                with detail_col2:
+                    st.markdown(f"**📅 Date:**\n{date}")
                 
-                # Add a divider between buses
-                if i < len(buses) - 1:
-                    st.markdown("---")
+                with detail_col3:
+                    st.markdown(f"**🕐 Time:**\n{time}")
+                
+                with detail_col4:
+                    if available_seats > 0:
+                        st.markdown(f"**💺 Seats:**\n{available_seats}/{total_seats} available")
+                    else:
+                        st.markdown(f"**❌ Fully Booked**")
+            
+            with col2:
+                st.write("")  # Add some spacing
+                st.write("")  # Add some spacing
+                if st.button(" Book Now", key=f"book_{bus_id}", type="primary", use_container_width=True):
+                    # Store the selected bus ID in session state
+                    st.session_state.selected_bus_id = bus_id
+                    # Redirect to signup page
+                    st.switch_page("pages/signup.py")
     else:
         st.info("😔 No buses with available seats at the moment. Please check back later!")
         
@@ -76,4 +69,4 @@ except Exception as e:
     st.error(f"Error loading buses: {str(e)}")
 
 st.markdown("---")
-st.info("💡 **Note:** To book a bus, click 'Book Now' and sign up for an account. Use the sidebar to access admin dashboard and user management features.")
+st.info("💡 **Note:** To book a bus, click 'Book Now' and sign up for an account. Use the sidebar to access user dashboard.")

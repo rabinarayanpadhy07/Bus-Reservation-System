@@ -560,7 +560,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666; padding: 1rem;'>
-        🚌 Bus Reservation Admin Dashboard | Built with Streamlit
+       Admin Dashboard
     </div>
     """, 
     unsafe_allow_html=True

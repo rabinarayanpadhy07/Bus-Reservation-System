@@ -150,7 +150,7 @@ with tab2:
                 booking_col1, booking_col2 = st.columns([4, 1])
                 
                 with booking_col1:
-                    st.subheader(f"🎫 Booking #{i}: {bus_name}")
+                    st.subheader(f"Booking #{i}: {bus_name}")
                     
                     # Booking details in columns
                     detail_col1, detail_col2, detail_col3, detail_col4 = st.columns(4)
@@ -175,7 +175,7 @@ with tab2:
                 
                 with booking_col2:
                     st.write("")  # Add some space
-                    if st.button("🗑️ Cancel Booking", key=f"cancel_{booking_id}", type="secondary", use_container_width=True):
+                    if st.button(" Cancel Booking", key=f"cancel_{booking_id}", type="secondary", use_container_width=True):
                         success, msg = booking.cancel_booking(booking_id, st.session_state.user_id)
                         if success:
                             st.success(f"✅ {msg}")
@@ -197,4 +197,4 @@ with tab2:
 
 # Footer
 st.markdown("---")
-st.info("🚌 **Bus Reservation System** - Safe travels and happy journey!")
+st.info(" Safe travels and happy journey!")
