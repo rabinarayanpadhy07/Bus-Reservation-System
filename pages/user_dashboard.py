@@ -3,7 +3,7 @@ from database.db_connection import get_connection
 from datetime import date
 from modules import booking
 
-st.title("🚌 Bus Reservation System")
+st.title("User Dashboard - Book My Bus")
 
 # --- Session Check ---
 if "user_id" not in st.session_state or not st.session_state.user_id:

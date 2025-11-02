@@ -1,13 +1,13 @@
 import streamlit as st
 from database.db_connection import get_connection
 
-st.set_page_config(page_title="Bus Reservation System", page_icon="🚌", layout="centered")
+st.set_page_config(page_title="Book My Bus", page_icon="🚌", layout="centered")
 
 st.markdown("""
     <div style='text-align: center; padding: 2rem;'>
-        <h1 style='color: #667eea;'>Bus Reservation System</h1>
+        <h1 style='color: #667eea;'>Book My Bus</h1>
         <p style='font-size: 1.2rem; color: #444;'>
-            Welcome to the Bus Reservation System.<br>
+            Welcome to the Book My Bus.<br>
             Browse available buses and book your journey today!
         </p>
     </div>

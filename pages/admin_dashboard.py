@@ -69,7 +69,7 @@ menu = st.sidebar.radio(
 # Header
 st.markdown("""
     <div class='main-header'>
-        <h1>🚌 Bus Reservation Admin Dashboard</h1>
+        <h1>Book My Bus Admin Dashboard</h1>
     </div>
 """, unsafe_allow_html=True)
 

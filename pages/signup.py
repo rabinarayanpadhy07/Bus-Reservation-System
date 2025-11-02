@@ -3,6 +3,12 @@ from database.db_connection import get_connection
 import bcrypt
 import re
 
+# Initialize session state
+if "user_id" not in st.session_state:
+    st.session_state.user_id = None
+if "user_name" not in st.session_state:
+    st.session_state.user_name = ""
+
 # ---- Helper function to validate email ----
 def is_valid_email(email):
     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
@@ -50,7 +56,20 @@ if submit:
                     (name, email, hashed_password)
                 )
                 conn.commit()
-                st.success("Account created successfully! You can now login.")
+                
+                # Get the newly created user ID (using lastrowid is more efficient)
+                user_id = cursor.lastrowid
+                
+                # Automatically log in the user
+                st.session_state.user_id = user_id
+                st.session_state.user_name = name
+                
+                st.success(f"🎉 Account created successfully! Welcome, {name}!")
+                st.info("You have been automatically logged in. Redirecting to dashboard...")
+                st.balloons()  # Celebration animation
+                
+                # Redirect to user dashboard
+                st.switch_page("pages/user_dashboard.py")
         except Exception as e:
             st.error(f"An error occurred: {str(e)}. Please try again.")
         finally:
